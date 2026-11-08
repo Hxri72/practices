@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require("cors");
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.listen(5005,()=>{
 
 app.use(express.json());
 
+app.use(cors());
+
 app.get("/candidates",(req,res)=> {
     res.status(200).json(candidates);
 })
@@ -25,6 +28,22 @@ app.get("/candidates/:id",(req,res)=> {
     const candidate = candidates.find(c => c.id === id);
     if(!candidate) return res.status(404).json({message: "candidate not found"});
     res.status(200).json(candidate);
+})
+
+app.post("/create", (req,res) => {
+    const requestBody = req.body;
+    console.log(requestBody);
+    const data= {
+        id: candidates.length + 1,
+        name: requestBody.name,
+        skills: [requestBody.skills],
+        experience: requestBody.experience
+    }
+    candidates.push(data);
+    res.status(201).json({
+        message: "candidate created",
+        data: data
+    })
 })
 
 module.exports = app;
